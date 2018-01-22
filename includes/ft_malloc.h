@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FTMALLOC_H
-# define FTMALLOC_H
+#ifndef FT_MALLOC_H
+# define FT_MALLOC_H
 
 # define TRUE 1
 # define FALSE 0
@@ -47,16 +47,20 @@
 # define INVCYAN "\033[7;36m"
 # define INVRED "\033[7;31m"
 # define INVMAGENTA "\033[7;35m"
+# define align4(x) (((((x) -1) > >2) < <2)+4)
+# define BLOCK_SIZE 12
 
 # include <sys/wait.h>
 # include <sys/ioctl.h>
 # include <sys/stat.h>
 # include <sys/param.h>
+# include <sys/types.h>
 # include <ftw.h>
 # include <dirent.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <stddef.h>
 # include <string.h>
 # include <signal.h>
 # include <termios.h>
@@ -67,6 +71,14 @@
 
 typedef int					t_bool;
 
+char memory[20000];
 
+typedef struct			s_block
+{
+	size_t						size;
+	t_bool						free;
+	struct s_block		*next;
+	char							data[1];
+}										t_block;
 
 #endif
