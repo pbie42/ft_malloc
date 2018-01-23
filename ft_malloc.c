@@ -12,14 +12,11 @@
 
 #include "ft_malloc.h"
 
-t_session			*session = NULL;
-void					*base = NULL;
-
 t_block				*find_block(t_block *last, size_t size)
 {
 	t_block			*b;
 
-	b = base;
+	b = get_base();
 	while (b && !(b->free && b->size >= size))
 	{
 		last = b;
@@ -30,13 +27,17 @@ t_block				*find_block(t_block *last, size_t size)
 
 t_block				*extend_heap(t_block *last, size_t s)
 {
+	int					sb;
 	t_block			*b;
 
 	b = sbrk(0);
-	if (sbrk(BLOCK_SIZE + s) == (void *)-1)
+	sb = (int)sbrk(BLOCK_SIZE + s);
+	if (sb < 0)
 		return (NULL);
 	b->size = s;
 	b->next = NULL;
+	b->prev = last;
+	b->ptr = b->data;
 	if (last)
 		last->next = b;
 	b->free = FALSE;
@@ -47,12 +48,16 @@ void					split_block(t_block *b, size_t s)
 {
 	t_block			*new;
 
-	new = b->data + s;
+	new = (t_block)(b->data + s);
 	new->size = b->size - s - BLOCK_SIZE;
 	new->next = b->next;
+	new->prev = b;
 	new->free = TRUE;
+	new->ptr = new->data;
 	b->size = s;
 	b->next = new;
+	if (new->next)
+		new->next->prev = new;
 }
 
 void					*ft_malloc(size_t size)
@@ -64,10 +69,10 @@ void					*ft_malloc(size_t size)
 	if (size <= 0)
 		return (NULL);
 	s = align4(size);
-	if (base)
+	if (get_base())
 	{
 		// first find a block
-		last = base;
+		last = get_base();
 		b = find_block(last, s);
 		if (b)
 		{
@@ -90,7 +95,7 @@ void					*ft_malloc(size_t size)
 		b = extend_heap(NULL, s);
 		if (!b)
 			return (NULL);
-		base = b;
+		set_base(b);
 	}
 	return (b->data);
 }

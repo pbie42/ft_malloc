@@ -48,7 +48,7 @@
 # define INVRED "\033[7;31m"
 # define INVMAGENTA "\033[7;35m"
 # define align4(x) (((((x) -1) > >2) < <2)+4)
-# define BLOCK_SIZE 12
+# define BLOCK_SIZE 20
 
 # include <sys/wait.h>
 # include <sys/ioctl.h>
@@ -76,9 +76,20 @@ char memory[20000];
 typedef struct			s_block
 {
 	size_t						size;
-	t_bool						free;
 	struct s_block		*next;
+	struct s_block		*prev;
+	t_bool						free;
+	void							*ptr;
 	char							data[1];
 }										t_block;
+
+void					*ft_malloc(size_t size);
+void					*ft_calloc(size_t number, size_t size);
+void					*get_base(void);
+void					*set_base(void *val);
+void					copy_block(t_block *src, t_block *dest);
+t_block				get_block(void *p);
+t_block				fusion(t_block *b);
+t_bool				valid_address(void *p);
 
 #endif
