@@ -1,0 +1,4 @@
+Malloc:
+  ☐ Check if global has been initialized/is this our first time calling Malloc
+    ☐ If it is initialize global by setting up the different memory size groups
+    
