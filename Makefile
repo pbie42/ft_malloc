@@ -10,9 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_malloc
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
 
-CFLAGS = -g -I includes
+NAME = malloc
+
+CFLAGS = -Wall -Wextra -Werror
 
 SRC = main.c \
 
@@ -22,17 +26,20 @@ all : $(NAME)
 
 $(NAME) : $(OBJ)
 	@make -C libft
-	@gcc $(CFLAGS) -o $(NAME) $(OBJ) -I libft/includes/libftprintf.h libft/libftprintf.a -ltermcap
+	@gcc $(CFLAGS) $(OBJ) -fPIC -shared -o libft_malloc_$(HOSTTYPE).so
+	ln -sf libft_malloc_$(HOSTTYPE).so libft_malloc.so
 	@echo "$(NAME) created"
 
+%.o: %.c
+	gcc $(CFLAGS) -c $< -I./includes-o $@
+
 clean :
-	make -C libft clean
 	rm -rf $(OBJ)
 	@echo "OBJ deleted"
 
 fclean : clean
-	rm -rf $(NAME)
-	rm -rf libft/libftprintf.a
+	rm -rf libft_malloc.so
+	rm -rf libft_malloc_$(HOSTTYPE).so
 	@echo "$(NAME) deleted"
 
 re : fclean all
