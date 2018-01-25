@@ -1,4 +1,27 @@
 Malloc:
-  ☐ Check if global has been initialized/is this our first time calling Malloc
-    ☐ If it is initialize global by setting up the different memory size groups
-    
+	☐ Check if global has been initialized/is this our first time calling Malloc
+		☐ If it is initialize global by setting up the different memory size groups
+			☐ except for large size because we will only mmap those when needed
+		MemGroup:
+			☐ Will need to mmap a memgroup and fill in needed info.
+			☐ to avoid needing to allocate memory for the block inside of the memgroup add a pointer for one and place the memgroup mem to it.
+			☐ If there is a previous memgroup attach the new memgroup to it's next otherwise just return the new memgroup
+			Notes:
+				☐ The memgroup size is the size given minus the size of a t_mem_group whereas the mem is equal to the size of a memgroup plus the voided size of the ptr memgroup.
+				☐ A t_block mem is the size of the voided tmp plus the size of a t_block whereas its size is is the ptr size minus the sizeof a tblock
+	Find:
+		☐ Find where we can mmap (whether we want small, med, or large)
+		☐ We will again need a block and a memgroup declared
+		☐ We compare the size given to the size of a tiny and medium
+			☐ If it's either we set our global mem group array of that size to the declared memgroup
+		☐ If it's bigger than a small and medium size memory we need to extend the memory and we return the result
+			Memory Extend:
+				☐ Here we are only going to be doing a list. Each time we need a mmap of this size we will make it specific for what is demanded. And just add it to the list.
+				☐ We will need a block declared for a tmp (to loop through our list) and a new for the new memory block we are making
+				☐ Note that we will need to mmap the size + sizeof(t_block) to make sure we have the space for our metadata and the memory we need for the allocation
+				☐ Here the ptr is the voided new plus the size of a tblock and size is the size given
+				☐ Note, we will need to check if we have a list for large sizes already. If not we set the new t_block equal to our global for large.
+				☐ If it is not the first one we need to loop through our list to find the last one and place the new t_block as it's next
+				☐ we then return the new tblock
+		☐ If the size is small or medium then we need to loop through that memory group, and in each group loop through it's list of t_blocks (It's mem) while the mem exists and the mem is smaller than the given size plus the size of a t_block or if we have already used the mem;
+		☐ 
