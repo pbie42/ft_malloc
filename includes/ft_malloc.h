@@ -47,10 +47,10 @@
 # define INVCYAN "\033[7;36m"
 # define INVRED "\033[7;31m"
 # define INVMAGENTA "\033[7;35m"
-# define align4(x) (((((x) -1) > >2) < <2)+4)
-# define BLOCK_SIZE 20
 # define SML 512
 # define MED 4096
+# define PROT PROT_READ|PROT_WRITE
+# define ANON MAP_PRIVATE|MAP_ANONYMOUS
 
 # include <sys/wait.h>
 # include <sys/ioctl.h>
@@ -73,8 +73,6 @@
 
 typedef int					t_bool;
 
-char memory[20000];
-
 typedef struct				s_mem_group
 {
 	void					*mem;
@@ -89,7 +87,6 @@ typedef struct			s_block
 	struct s_block		*prev;
 	t_bool						free;
 	void							*ptr;
-	// char							data[1];
 }										t_block;
 
 typedef struct				s_memory
@@ -100,7 +97,7 @@ typedef struct				s_memory
 	t_block					*lrg;
 }							t_memory;
 
-extern t_memory				glbl_mem;
+extern t_memory				global_mem;
 
 void					*ft_malloc(size_t size);
 void					*ft_calloc(size_t number, size_t size);

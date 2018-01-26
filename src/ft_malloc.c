@@ -5,97 +5,46 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pbie <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/11 13:17:17 by pbie              #+#    #+#             */
-/*   Updated: 2016/12/11 15:16:26 by pbie             ###   ########.fr       */
+/*   Created: 2018/01/24 13:17:17 by pbie              #+#    #+#             */
+/*   Updated: 2018/01/24 15:16:26 by pbie             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-t_block				*find_block(t_block *last, size_t size)
+t_mem			global_mem = {0, 0, 0, 0};
+
+static void			*new_mem_group(t_mem_group *current, t_size size)
 {
-	t_block			*b;
+	t_mem_group		*mem_group;
+	t_block			*tmp_block;
 
-	b = get_base();
-	while (b && !(b->free && b->size >= size))
-	{
-		last = b;
-		b = b->next;
-	}
-	return (b);
-}
-
-t_block				*extend_heap(t_block *last, size_t s)
-{
-	int					sb;
-	t_block			*b;
-
-	b = sbrk(0);
-	sb = (int)sbrk(BLOCK_SIZE + s);
-	if (sb < 0)
-		return (NULL);
-	b->size = s;
-	b->next = NULL;
-	b->prev = last;
-	b->ptr = b->data;
-	if (last)
-		last->next = b;
-	b->free = FALSE;
-	return (b);
-}
-
-void					split_block(t_block *b, size_t s)
-{
-	t_block			*new;
-
-	new = (t_block)(b->data + s);
-	new->size = b->size - s - BLOCK_SIZE;
-	new->next = b->next;
-	new->prev = b;
-	new->free = TRUE;
-	new->ptr = new->data;
-	b->size = s;
-	b->next = new;
-	if (new->next)
-		new->next->prev = new;
+	mem_group = mmap(0, size, PROT, ANON, -1, 0);
+	mem_group->size = size - sizeof(t_mem_group);
+	mem_group->mem = (void *)mem_group + sizeof(t_mem_group);
+	mem_group->next = NULL;
+	tmp_block = mem_group->mem;
+	tmp_block->size = mem_group->size - sizeof(t_block);
+	tmp_block->ptr = (void *)tmp_block + sizeof(t_block);
+	tmp_block->free = TRUE;
+	tmp_block->next = NULL;
+	tmp_block->prev = NULL;
+	if (current)
+		current->next = mem_group;
+	return (mem_group);
 }
 
 void					*ft_malloc(size_t size)
 {
-	t_block			*b;
-	t_block			*last;
-	size_t			s;
+	t_block			*ptr;
+	int				sz;
 
-	if (size <= 0)
-		return (NULL);
-	s = align4(size);
-	if (get_base())
+	if (!glbl_mem.init)
 	{
-		// first find a block
-		last = get_base();
-		b = find_block(last, s);
-		if (b)
-		{
-			// Can we split?
-			if ((b->size - s) >= (BLOCK_SIZE + 4))
-				split_block(b, s);
-			b->free = FALSE;
-		}
-		else
-		{
-			// No fitting block, extend the heap
-			b = extend_heap(last, s);
-			if (!b)
-				return (NULL);
-		}
+		s = getpagesize() * 13; // Page size is 4096 bytes so this is 53248 bytes aka 52kb
+		global_mem.sml = new_mem_group(NULL, s);
+		s * 128; // 6815744 bytes aka 6.5mb
+		global_mem.med = new_mem_group(NULL, s);
+		global_mem.init = TRUE;
 	}
-	else
-	{
-		// first time
-		b = extend_heap(NULL, s);
-		if (!b)
-			return (NULL);
-		set_base(b);
-	}
-	return (b->data);
 }
