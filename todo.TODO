@@ -1,3 +1,10 @@
+Free:
+	☐ is a void function
+	☐ Takes a void *var
+		☐ This will be a pointer to a t_block of memory.
+		☐ To get the entire block of memory we will need to set a tmp equal to the var - sizeof(t_block)
+	☐ if no pointer given return
+
 Malloc:
 	✔ Check if global has been initialized/is this our first time calling Malloc @done (2018-1-26 19:34:35)
 		✔ If it is the first time initialize global by setting up the different memory size groups @done (2018-1-26 19:34:55)
