@@ -1,7 +1,7 @@
 Malloc:
 	✔ Check if global has been initialized/is this our first time calling Malloc @done (2018-1-26 19:34:35)
 		✔ If it is the first time initialize global by setting up the different memory size groups @done (2018-1-26 19:34:55)
-			☐ except for large size because we will only mmap those when needed
+			✔ except for large size because we will only mmap those when needed @done (2018-1-27 14:20:30)
 		MemGroup:
 			✔ Will need to mmap a memgroup and fill in needed info. @done (2018-1-26 19:35:03)
 			✔ to avoid needing to allocate memory for the block inside of the memgroup add a pointer for one and place the memgroup mem to it. @done (2018-1-26 19:35:10)
@@ -10,26 +10,27 @@ Malloc:
 				✔ The memgroup size is the size given minus the size of a t_mem_group whereas the mem is equal to the size of a memgroup plus the voided size of the ptr memgroup. @done (2018-1-26 19:35:16)
 				✔ A t_block mem is the size of the voided tmp plus the size of a t_block whereas its size is is the ptr size minus the sizeof a tblock @done (2018-1-26 19:35:17)
 	Find:
-		☐ Find where we can mmap (whether we want small, med, or large)
-		☐ We will again need a block and a memgroup declared
-		☐ We compare the size given to the size of a tiny and medium
-			☐ If it's either we set our global mem group array of that size to the declared memgroup
-		☐ If it's bigger than a small and medium size memory we need to extend the memory and we return the result
+		✔ Find where we can mmap (whether we want small, med, or large) @done (2018-1-27 12:59:17)
+		✔ We will again need a block and a memgroup declared @done (2018-1-27 12:59:19)
+		✔ We compare the size given to the size of a tiny and medium @done (2018-1-27 12:59:23)
+			✔ If it's either we set our global mem group array of that size to the declared memgroup @done (2018-1-27 12:59:30)
+		✔ If it's bigger than a small and medium size memory we need to extend the memory and we return the result @done (2018-1-27 12:59:33)
 			Memory Extend:
-				☐ Here we are only going to be doing a list. Each time we need a mmap of this size we will make it specific for what is demanded. And just add it to the list.
-				☐ We will need a block declared for a tmp (to loop through our list) and a new for the new memory block we are making
-				☐ Note that we will need to mmap the size + sizeof(t_block) to make sure we have the space for our metadata and the memory we need for the allocation
-				☐ Here the ptr is the voided new plus the size of a tblock and size is the size given
-				☐ Note, we will need to check if we have a list for large sizes already. If not we set the new t_block equal to our global for large.
-				☐ If it is not the first one we need to loop through our list to find the last one and place the new t_block as it's next and the tmp as its prev
-				☐ we then return the new tblock
-		☐ If the size is small or medium then we need to loop through that memory group, and in each group loop through it's list of t_blocks (It's mem) while the mem exists and the mem is smaller than the given size plus the size of a t_block or if we have already used the mem
-		☐ If the mem exists and the mem's size is greater than the size demanded we then run a new block function.
-		☐ We need to check if the previous t_block size (the one passed) is less than or equal to the size of a t_block plus the given size. If so we return it.
-		☐ If not we need to make a new t_block from the memory we have.
-		☐ We set up a new tmp t_block by setting it equal to the voided cast of the prev->ptr casted as a string and added to the size given. This gives us the start of the next address we will use when we come back to look for more memory.
-		☐ We set up all the variables in our t_block struct and set it's next to the prev's next (which if this is the first time using it will be null)
-		☐ We also need to change the previous size to what we are allocating. So we set prev->size equal to prev->size - (tmp->size + sizeof t_block)
-		☐ If prev->next is not null and prev->next has a next that is not null we set next->next->prev to tmp->next
-		☐ We then set prev->next to our new tmp
-		☐ and we set if it's free to true and return prev
+				✔ Here we are only going to be doing a list. Each time we need a mmap of this size we will make it specific for what is demanded. And just add it to the list. @done (2018-1-27 14:10:27)
+				✔ We will need a block declared for a tmp (to loop through our list) and a new for the new memory block we are making @done (2018-1-27 14:10:38)
+				✔ Note that we will need to mmap the size + sizeof(t_block) to make sure we have the space for our metadata and the memory we need for the allocation @done (2018-1-27 14:12:11)
+				✔ Here the ptr is the voided new plus the size of a tblock and size is the size given @done (2018-1-27 14:13:21)
+				✔ Note, we will need to check if we have a list for large sizes already. If not we set the new t_block equal to our global for large. @done (2018-1-27 14:14:19)
+				✔ If it is not the first one we need to loop through our list to find the last one and place the new t_block as it's next and the tmp as its prev @done (2018-1-27 14:16:17)
+				✔ we then return the new tblock @done (2018-1-27 14:16:19)
+		✔ If the size is small or medium then we need to loop through that memory group, and in each group loop through it's list of t_blocks (It's mem) while the mem exists and the mem is smaller than the given size plus the size of a t_block or if we have already used the mem @done (2018-1-27 13:05:11)
+		✔ If the mem exists and the mem's size is greater than the size demanded we then run a new block function. @done (2018-1-27 13:43:07)
+			New Memory Block:
+			✔ We need to check if the previous t_block size (the one passed) is less than or equal to the size of a t_block plus the given size. If so we return it. @done (2018-1-27 13:44:01)
+			✔ If not we need to make a new t_block from the memory we have. @done (2018-1-27 13:55:31)
+			✔ We set up a new tmp t_block by setting it equal to the voided cast of the prev->ptr casted as a string and added to the size given. This gives us the start of the next address we will use when we come back to look for more memory. @done (2018-1-27 13:57:14)
+			✔ We set up all the variables in our t_block struct and set it's next to the prev's next (which if this is the first time using it will be null) @done (2018-1-27 14:01:28)
+			✔ We also need to change the previous size to what we are allocating. So we set prev->size equal to prev->size - (tmp->size + sizeof t_block) @done (2018-1-27 14:02:07)
+			✔ If prev->next is not null and prev->next has a next that is not null we set next->next->prev to tmp->next @done (2018-1-27 14:03:04)
+			✔ We then set prev->next to our new tmp @done (2018-1-27 14:03:22)
+			✔ and we set if it's free to true and return prev @done (2018-1-27 14:09:09)
