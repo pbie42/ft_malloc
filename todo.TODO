@@ -1,9 +1,29 @@
 Free:
 	☐ is a void function
 	☐ Takes a void *var
-		☐ This will be a pointer to a t_block of memory.
-		☐ To get the entire block of memory we will need to set a tmp equal to the var - sizeof(t_block)
+	☐ We will need a memgroup tmp, a memgroup prev, and a t_block tmp
 	☐ if no pointer given return
+	☐ To get the entire block of memory we will need to set a t_block tmp equal to the var - sizeof(t_block) to get it's actual memory addres
+	☐ Then we check if it's a large size memory that we are freeing by sending the block to free_lrg
+		Free Lrg:
+			☐ Will take a ptr of t_block which is the memory address we are looking for.
+			☐ The function will return a t_bool saying whether we freed our memory or not from the match on the ptr
+			☐ We need a tmp of type t_block to set our global variable of global_mem.lrg to. We will then cycle through it.
+			☐ We also need a t_bool to mark in our loop if we have freed our memory which we will return.
+			☐ The while loop is a standard list loop. While tmp exists and while our t_bool is false we set tmp to tmp->next
+			☐ We are then putting an if to see if tmp is equal to ptr meaning we have matched on an address
+			☐ If we do match on an address we need to keep our list connected while removing the list item
+			☐ if tmp->next we set tmp->next->prev = tmp->prev
+			☐ Then we need to check if tmp->prev exists, if it does tmp->prev->next = tmp->next
+			☐ We the check if tmp is equal to our global_mem.lrg, if it is set global_mem.lrg = tmp->next
+			☐ After our checks we need to free the memory. We do this with munmap
+			☐ munmap takes the pointer address which is tmp and it takes the size of the memory it will free which is tmp->size plus the size of the t_block
+			☐ once that is done we set the t_bool of our loop to true
+			☐ at the end of the function we return our t_bool
+	☐ If free_lrg returned true we return ;
+	☐ If it is false we move to the next If
+
+
 
 Malloc:
 	✔ Check if global has been initialized/is this our first time calling Malloc @done (2018-1-26 19:34:35)
