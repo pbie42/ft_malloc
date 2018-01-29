@@ -1,27 +1,110 @@
+Realloc:
+	✔ is a void * function @done (2018-1-29 19:19:42)
+	✔ Takes a void *ptr and a size_t size @done (2018-1-29 19:19:43)
+	✔ Will need two t_block vars tmp and new @done (2018-1-29 19:20:12)
+	✔ We do what we did in free and set tmp = ptr - sizeof(t_block) to get the t_block address @done (2018-1-29 19:20:39)
+	✔ The first thing we do is check if we can find the address in our global_mem.sml, med, and large (for large we need a special find function) @done (2018-1-29 19:22:12)
+		find_lrg:
+			✔ return t_bool @done (2018-1-29 19:22:28)
+			✔ A simple loop through a list function. @done (2018-1-29 19:22:29)
+			✔ takes a t_block *ptr which is the given ptr to the function @done (2018-1-29 19:22:32)
+			✔ we need to declare a tmp t_block @done (2018-1-29 19:23:10)
+			✔ we set the tmp equal to global_mem.lrg @done (2018-1-29 19:23:24)
+			✔ while tmp tmp = tmp->next @done (2018-1-29 19:23:35)
+			✔ if (tmp == ptr) return true @done (2018-1-29 19:23:51)
+			✔ if no match return false @done (2018-1-29 19:25:48)
+	✔ If none of these return true then we return NULL @done (2018-1-29 19:25:50)
+	✔ If they are true we move to the next if to see if tmp->size > size + sizeof(t_block) (meaning the block we are trying to reallocate already has enough memory for the new size which is smaller) @done (2018-1-29 19:27:37)
+		✔ If true we set new = new_mem_block(tmp, size) which will create a "new" block by changing the size of the current allocation. @done (2018-1-29 19:31:41)
+		✔ We then need to merge the free part of the split block with the blocks next if it is also free, second param is NULL @done (2018-1-29 19:34:00)
+	✔ else if tmp->size < size + sizeof(t_block) && tmp->next && tmp->free && tmp->next->size + tmp->size > size then we need to extend the memory block @done (2018-1-29 19:35:45)
+		Extend Memory Block:
+			✔ void function @done (2018-1-29 19:36:29)
+			✔ takes our tmp, and the given size @done (2018-1-29 19:37:10)
+			✔ we need a t_block new @done (2018-1-29 19:37:20)
+			✔ first we set the new = (void *)tmp->ptr + size (this will give us the starting point of the next block for after we extend the current) @done (2018-1-29 19:38:19)
+			✔ the new size will be tmp->size + tmp->next->size - size (this takes into account that the current next has a t_block already accounted for) @done (2018-1-29 19:43:38)
+			✔ tmp->free will be set to false (which it should already be) @done (2018-1-29 19:43:51)
+			✔ we then change tmp->size to the size given @done (2018-1-29 19:43:59)
+			✔ Dont think we really need this but we set tmp->next->prev = new @done (2018-1-29 19:44:36)
+			✔ if (tmp->next->next) we set it's prev = new @done (2018-1-29 19:44:37)
+			✔ new->next = tmp->next->next @done (2018-1-29 19:44:57)
+			✔ tmp->next = new @done (2018-1-29 19:45:06)
+			✔ new->prev = tmp @done (2018-1-29 19:49:09)
+			✔ new->free = TRUE @done (2018-1-29 19:45:23)
+			✔ new->ptr = (void *)new + sizeof(t_block) @done (2018-1-29 19:45:52)
+		✔ We then return tmp->ptr now that it's been extended @done (2018-1-29 19:49:15)
+	✔ else we need to allocate an entire new block using malloc @done (2018-1-29 19:49:16)
+		✔ we set new = malloc(size) @done (2018-1-29 19:49:16)
+		✔ we ft_memcpy giving the new, tmp->ptr (for the actual allocated data address), and if size is < tmp->size we give the size otherwise tmp->size @done (2018-1-29 19:49:17)
+		✔ we then free ptr @done (2018-1-29 19:49:17)
+	✔ we then return new @done (2018-1-29 19:49:18)
+
+
+
 Free:
-	☐ is a void function
-	☐ Takes a void *var
-	☐ We will need a memgroup tmp, a memgroup prev, and a t_block tmp
-	☐ if no pointer given return
-	☐ To get the entire block of memory we will need to set a t_block tmp equal to the var - sizeof(t_block) to get it's actual memory addres
-	☐ Then we check if it's a large size memory that we are freeing by sending the block to free_lrg
+	✔ is a void function @done (2018-1-29 16:04:44)
+	✔ Takes a void *var @done (2018-1-29 16:04:45)
+	✔ We will need a memgroup tmp, a memgroup prev, and a t_block tmp @done (2018-1-29 16:04:46)
+	✔ if no pointer given return @done (2018-1-29 16:04:49)
+	✔ To get the entire block of memory we will need to set a t_block tmp equal to the var - sizeof(t_block) to get it's actual memory addres @done (2018-1-29 16:07:38)
+	✔ Then we check if it's a large size memory that we are freeing by sending the block to free_lrg @done (2018-1-29 16:08:49)
 		Free Lrg:
-			☐ Will take a ptr of t_block which is the memory address we are looking for.
-			☐ The function will return a t_bool saying whether we freed our memory or not from the match on the ptr
-			☐ We need a tmp of type t_block to set our global variable of global_mem.lrg to. We will then cycle through it.
-			☐ We also need a t_bool to mark in our loop if we have freed our memory which we will return.
-			☐ The while loop is a standard list loop. While tmp exists and while our t_bool is false we set tmp to tmp->next
-			☐ We are then putting an if to see if tmp is equal to ptr meaning we have matched on an address
-			☐ If we do match on an address we need to keep our list connected while removing the list item
-			☐ if tmp->next we set tmp->next->prev = tmp->prev
-			☐ Then we need to check if tmp->prev exists, if it does tmp->prev->next = tmp->next
-			☐ We the check if tmp is equal to our global_mem.lrg, if it is set global_mem.lrg = tmp->next
-			☐ After our checks we need to free the memory. We do this with munmap
-			☐ munmap takes the pointer address which is tmp and it takes the size of the memory it will free which is tmp->size plus the size of the t_block
-			☐ once that is done we set the t_bool of our loop to true
-			☐ at the end of the function we return our t_bool
-	☐ If free_lrg returned true we return ;
-	☐ If it is false we move to the next If
+			✔ Will take a ptr of t_block which is the memory address we are looking for. @done (2018-1-29 16:09:21)
+			✔ The function will return a t_bool saying whether we freed our memory or not from the match on the ptr @done (2018-1-29 16:09:49)
+			✔ We need a tmp of type t_block to set our global variable of global_mem.lrg to. We will then cycle through it. @done (2018-1-29 16:19:49)
+			✔ We also need a t_bool to mark in our loop if we have freed our memory which we will return. @done (2018-1-29 16:26:57)
+			✔ The while loop is a standard list loop. While tmp exists and while our t_bool is false we set tmp to tmp->next @done (2018-1-29 16:28:36)
+			✔ We are then putting an if to see if tmp is equal to ptr meaning we have matched on an address @done (2018-1-29 16:28:53)
+			✔ If we do match on an address we need to keep our list connected while removing the list item @done (2018-1-29 16:28:59)
+			✔ if tmp->next we set tmp->next->prev = tmp->prev @done (2018-1-29 16:29:35)
+			✔ Then we need to check if tmp->prev exists, if it does tmp->prev->next = tmp->next @done (2018-1-29 16:30:03)
+			✔ We then check if tmp is equal to our global_mem.lrg, if it is set global_mem.lrg = tmp->next @done (2018-1-29 16:30:40)
+			✔ After our checks we need to free the memory. We do this with munmap @done (2018-1-29 16:30:45)
+			✔ munmap takes the pointer address which is tmp and it takes the size of the memory it will free which is tmp->size plus the size of the t_block @done (2018-1-29 16:36:19)
+			✔ once that is done we set the t_bool of our loop to true @done (2018-1-29 16:36:36)
+			✔ at the end of the function we return our t_bool @done (2018-1-29 16:36:37)
+	✔ If free_lrg returned true we return ; @done (2018-1-29 16:08:51)
+	✔ If it is false we move to the next if where we will set memgroup tmp to our merge function @done (2018-1-29 16:41:13)
+		Merge:
+			✔ Merge will take a pointer to a t_block (our tmp from free) and and the address of the prev pointer from free as well (t_mem_g **prev) @done (2018-1-29 16:43:23)
+			✔ We will need to declare a tmp for a memgroup @done (2018-1-29 16:43:39)
+			✔ We will attempt to set this memgroup tmp using our find function. @done (2018-1-29 16:45:18)
+				Find:
+					✔ Find will take our t_block address (ptr), one of our global_mem groups (sml or med), and the address of prev t_mem_g **prev @done (2018-1-29 17:28:08)
+					✔ We will also need to declare a tmp for a t_block @done (2018-1-29 17:28:19)
+					✔ If our prev address exists we need to set it's dereference equal to null @done (2018-1-29 17:28:41)
+					✔ Then we loop through the global_mem group while it exists global_mem = global_mem->next @done (2018-1-29 17:29:04)
+					✔ Inside the loop we need to check if the ptr address given to us matches in this group @done (2018-1-29 17:29:12)
+					✔ if the void * of the gmem group's mem is <= void * ptr (meaning that the ptr's address is indeed in this group cause it comes after the groups first address or is the first address) @done (2018-1-29 17:30:04)
+					✔ && the void * ptr is <= to the void * of the gmem->mem + gmem->size (Meaning that it is within the possible address group for this memory group), then we loop through this memory group's block list @done (2018-1-29 17:31:06)
+						✔ We set the gmem->mem equal to our tmp t_block. @done (2018-1-29 17:31:36)
+						✔ while it exists tmp = tmp->next @done (2018-1-29 17:32:18)
+						✔ but if the tmp == ptr then we return that memgroup @done (2018-1-29 17:33:56)
+						✔ If we loop through the entire block list and never match then we return null @done (2018-1-29 17:34:27)
+					✔ Each loop of the memgroup we must check if prev exists, if it does we set it's dereferenced point equal to the current memgroup @done (2018-1-29 17:34:59)
+					✔ If we loop through all of our memgroups and dont find a match we return null @done (2018-1-29 17:36:42)
+			✔ If both attempts at finding the t_block fail we return null @done (2018-1-29 17:39:42)
+			✔ If one of the succeeded then we know that we have a valid address to one of our allocated t_blocks @done (2018-1-29 17:39:45)
+			✔ We set the ptr->free to true @done (2018-1-29 17:39:59)
+			✔ if ptr->prev exists and ptr->prev->free is true then we can merge our current ptr with the prev @done (2018-1-29 17:40:54)
+				✔ We first set ptr->prev->next equal to ptr->next to take our our current ptr @done (2018-1-29 17:41:26)
+				✔ We then set ptr->prev->size += ptr->size + sizeof(t_block) @done (2018-1-29 17:41:47)
+				✔ We check if ptr->next exists, if it does we set ptr->next->prev equal to ptr->prev @done (2018-1-29 17:42:07)
+				✔ and we then set our ptr equal to ptr->prev, since it is now merged @done (2018-1-29 17:42:30)
+			✔ We then check if ptr->next exists and if ptr->next->free is true, if it is we merge them. @done (2018-1-29 17:42:49)
+				✔ we set ptr->size += ptr->next->size + sizeof(t_block) @done (2018-1-29 17:43:36)
+				✔ and ptr->next = ptr->next->next @done (2018-1-29 17:43:50)
+				✔ We then check if ptr->next exists, if it does we set ptr->next->prev = ptr @done (2018-1-29 17:44:17)
+			✔ After our merges we return the memgroup which held our matching t_block @done (2018-1-29 17:45:51)
+	✔ If the merge function returns null we return ; @done (2018-1-29 17:45:57)
+	✔ If the merge function does not return null we need to check if we can free the memgroup @done (2018-1-29 17:46:01)
+	✔ We see if prev exists which would be the memgroup before the one we are currently on @done (2018-1-29 17:48:14)
+	✔ && we check if ((t_block *)memgroup->mem)->next does not exist (meaning that the t_block we just freed has nothing after it and therefore doesnt really need to be there since the memory isnt being used and we can just make it if needed with the next call to malloc) @done (2018-1-29 17:46:49)
+		✔ If we pass these checks we set prev->next = memgroup->next @done (2018-1-29 17:48:16)
+		✔ we then munmap(memgroup, memgroup->size + sizeof(memgroup)) @done (2018-1-29 17:48:16)
+	✔ End of free @done (2018-1-29 17:48:17)
+
 
 
 
@@ -34,7 +117,7 @@ Malloc:
 			✔ to avoid needing to allocate memory for the block inside of the memgroup add a pointer for one and place the memgroup mem to it. @done (2018-1-26 19:35:10)
 			✔ If there is a previous memgroup attach the new memgroup to it's next otherwise just return the new memgroup @done (2018-1-26 19:35:13)
 			Notes:
-				✔ The memgroup size is the size given minus the size of a t_mem_group whereas the mem is equal to the size of a memgroup plus the voided size of the ptr memgroup. @done (2018-1-26 19:35:16)
+				✔ The memgroup size is the size given minus the size of a t_mem_g whereas the mem is equal to the size of a memgroup plus the voided size of the ptr memgroup. @done (2018-1-26 19:35:16)
 				✔ A t_block mem is the size of the voided tmp plus the size of a t_block whereas its size is is the ptr size minus the sizeof a tblock @done (2018-1-26 19:35:17)
 	Find:
 		✔ Find where we can mmap (whether we want small, med, or large) @done (2018-1-27 12:59:17)

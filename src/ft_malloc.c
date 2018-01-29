@@ -14,7 +14,7 @@
 
 t_mem			global_mem = {0, 0, 0, 0};
 
-static t_block			*add_large(t_size size)
+static t_block			*add_large(size_t size)
 {
 	t_block				*tmp_block;
 	t_block				*new_block;
@@ -38,14 +38,14 @@ static t_block			*add_large(t_size size)
 	return (new_block);
 }
 
-static t_mem_group	*new_mem_group(t_mem_group *current, t_size size)
+static t_mem_g	*new_mem_group(t_mem_g *current, size_t size)
 {
-	t_mem_group		*mem_group;
+	t_mem_g		*mem_group;
 	t_block			*tmp_block;
 
 	mem_group = mmap(0, size, PROT, ANON, -1, 0);
-	mem_group->size = size - sizeof(t_mem_group);
-	mem_group->mem = (void *)mem_group + sizeof(t_mem_group);
+	mem_group->size = size - sizeof(t_mem_g);
+	mem_group->mem = (void *)mem_group + sizeof(t_mem_g);
 	mem_group->next = NULL;
 	tmp_block = mem_group->mem;
 	tmp_block->size = mem_group->size - sizeof(t_block);
@@ -58,7 +58,7 @@ static t_mem_group	*new_mem_group(t_mem_group *current, t_size size)
 	return (mem_group);
 }
 
-t_block					*new_mem_block(t_block *current, t_size size)
+t_block					*new_mem_block(t_block *current, size_t size)
 {
 	t_block				*new_block;
 
@@ -76,9 +76,9 @@ t_block					*new_mem_block(t_block *current, t_size size)
 	return (current);
 }
 
-static t_block			*find_mem(t_size size)
+static t_block			*find_mem(size_t size)
 {
-	t_mem_group		*tmp_group;
+	t_mem_g		*tmp_group;
 	t_block			*tmp_block;
 
 	if (size < SML)

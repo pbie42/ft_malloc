@@ -12,43 +12,63 @@
 
 #include "ft_malloc.h"
 
-void					*ft_realloc(void *p, size_t size)
+static t_bool		*find_lrg(t_block *ptr)
 {
-	size_t			s;
-	t_block			*b;
-	t_block			*new;
-	void				*newp;
+	t_block			*tmp;
 
-	if (!p)
-		return(ft_malloc(size));
-	if (valid_address(p))
+	tmp = global_mem.lrg;
+	while (tmp)
 	{
-		s = align4(size);
-		b = get_block(p);
-		if (b->size >= s)
-			if (b->size - s >= (BLOCK_SIZE + 4))
-				split_block(b, s);
-		else
-		{
-			if (b->next && b->next->free
-				&& (b->size + BLOCK_SIZE + b->next->size) >= s)
-			{
-				fusion(b);
-				if (b->size - s >= (BLOCK_SIZE + 4))
-					split_block(b, s);
-			}
-			else
-			{
-				newp = ft_malloc(s);
-				if (!newp)
-					return (NULL);
-				new = get_block(newp);
-				copy_block(b, new);
-				ft_free(p);
-				return (newp);
-			}
-		}
-		return (p);
+		if (tmp == ptr)
+			return (TRUE);
+		tmp = tmp->next;
 	}
-	return (NULL);
+	return (FALSE);
+}
+
+void					extend_block(t_block *tmp, size_t size)
+{
+	t_block			*new;
+
+	new = (void *)tmp + size;
+	new->size = (tmp->size + tmp->next->size) - size;
+	tmp->free = FALSE;
+	tmp->size = size;
+	tmp->next->prev = new;
+	if (tmp->next->next)
+		tmp->next->next->prev = new;
+	new->next = tmp->next->next;
+	tmp->next = new;
+	new->prev = tmp;
+	new->free = TRUE;
+	new->ptr = (void *)ptr + sizeof(t_block);
+}
+
+void					*ft_realloc(void *ptr, size_t size)
+{
+	t_block			*tmp;
+	t_block			*new;
+
+	tmp = ptr - sizeof(t_block);
+	if (!find_mem(tmp, global_mem.sml, NULL)
+		|| !find_mem(tmp, global_mem.med, NULL) || !find_lrg(tmp))
+		return (NULL);
+	if (tmp->size > size + sizeof(t_block))
+	{
+		new = new_mem_block(tmp, size);
+		fusion(tmp->next, NULL);
+	}
+	else if (tmp->size < size + sizeof(t_block) && tmp->next
+				&& tmp->next->free && tmp->next->size + tmp->size > size)
+	{
+		extend_block(tmp, size);
+		return (tmp->ptr);
+	}
+	else
+	{
+		new = ft_malloc(size);
+		ft_memcpy(new, tmp->ptr, size < tmp->size ? size : tmp->size);
+		ft_free(ptr);
+	}
+	return (new);
 }

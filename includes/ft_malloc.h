@@ -57,6 +57,8 @@
 # include <sys/stat.h>
 # include <sys/param.h>
 # include <sys/types.h>
+# include <sys/resource.h>
+# include <sys/mman.h>
 # include <ftw.h>
 # include <dirent.h>
 # include <unistd.h>
@@ -73,12 +75,12 @@
 
 typedef int					t_bool;
 
-typedef struct				s_mem_group
+typedef struct				s_mem_g
 {
 	void					*mem;
 	size_t					size;
 	struct s_mem_group			*next;
-}							t_mem_group;
+}							t_mem_g;
 
 typedef struct			s_block
 {
@@ -92,20 +94,18 @@ typedef struct			s_block
 typedef struct				s_memory
 {
 	char					init;
-	t_mem_group				*sml;
-	t_mem_group				*med;
+	t_mem_g				*sml;
+	t_mem_g				*med;
 	t_block					*lrg;
 }							t_memory;
 
 extern t_memory				global_mem;
 
 void					*ft_malloc(size_t size);
-void					*ft_calloc(size_t number, size_t size);
-void					*get_base(void);
-void					*set_base(void *val);
-void					copy_block(t_block *src, t_block *dest);
-t_block				get_block(void *p);
-t_block				fusion(t_block *b);
-t_bool				valid_address(void *p);
+void					ft_free(void *ptr);
+t_block				*new_mem_block(t_block *current, size_t size);
+t_mem_g				*fusion(t_block *ptr, t_mem_g **prev);
+t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev);
+void					extend_block(t_block *tmp, size_t size);
 
 #endif
