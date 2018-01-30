@@ -21,10 +21,12 @@ CFLAGS = -Wall -Wextra -Werror
 SRC = src/utils/ft_memcpy.c \
 			src/utils/ft_putnbr_base.c \
 			src/utils/ft_putstr_mem.c \
+			src/utils/ft_show_alloc_mem.c \
 			src/ft_free.c \
 			src/ft_malloc.c \
 			src/ft_realloc.c \
 			src/show_alloc_mem.c \
+			src/thread_safe.c \
 
 OBJ = $(SRC:.c=.o)
 

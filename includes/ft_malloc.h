@@ -55,7 +55,12 @@ extern t_memory						global_mem;
 extern pthread_mutex_t		global_mutex;
 
 void					*ft_malloc(size_t size);
+void					*malloc(size_t size);
 void					ft_free(void *ptr);
+void					free(void *ptr);
+void					*ft_realloc(void *ptr, size_t size);
+void					*realloc(void *ptr, size_t size);
+void					*calloc(size_t nitems, size_t size);
 t_block				*new_mem_block(t_block *current, size_t size);
 t_mem_g				*fusion(t_block *ptr, t_mem_g **prev);
 t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev);
@@ -64,5 +69,7 @@ void					*ft_memcpy(void *dest, const void *src, size_t size);
 int						ft_putnbr_base(size_t number, int base);
 int						ft_putstr_mem(char *s);
 t_mem_g				*new_mem_group(t_mem_g *current, size_t size);
+void					ft_show_alloc_mem(void);
+void					show_alloc_mem(void);
 
 #endif
