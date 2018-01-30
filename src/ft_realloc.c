@@ -12,7 +12,7 @@
 
 #include "ft_malloc.h"
 
-static t_bool		*find_lrg(t_block *ptr)
+static t_bool		find_lrg(t_block *ptr)
 {
 	t_block			*tmp;
 
@@ -41,7 +41,7 @@ void					extend_block(t_block *tmp, size_t size)
 	tmp->next = new;
 	new->prev = tmp;
 	new->free = TRUE;
-	new->ptr = (void *)ptr + sizeof(t_block);
+	new->ptr = (void *)new + sizeof(t_block);
 }
 
 void					*ft_realloc(void *ptr, size_t size)

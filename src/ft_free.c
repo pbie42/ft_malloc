@@ -59,7 +59,7 @@ t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev)
 		}
 		if (prev)
 			*prev = mem_g;
-		mem_g = meg_g->next;
+		mem_g = mem_g->next;
 	}
 	return (NULL);
 }
@@ -103,9 +103,9 @@ void						ft_free(void *ptr)
 		return ;
 	if (!(tmp_group = fusion(tmp_block, &prv_group)))
 		return ;
-	if (prev && !((t_block *)tmp_group->mem)->next)
+	if (prv_group && !((t_block *)tmp_group->mem)->next)
 	{
-		prev->next = tmp_group->next;
-		munmap(tmp_group, tmp->group->size + sizeof(tmp_group));
+		prv_group->next = tmp_group->next;
+		munmap(tmp_group, tmp_group->size + sizeof(tmp_group));
 	}
 }

@@ -14,21 +14,21 @@
 
 void					print_mem_group(char *name, void *addr)
 {
-	ft_putstr(name);
-	ft_putstr(" : 0x");
-	ft_putnbr((size_t)addr, 16);
-	ft_putstr("\n");
+	ft_putstr_mem(name);
+	ft_putstr_mem(" : 0x");
+	ft_putnbr_base((size_t)addr, 16);
+	ft_putstr_mem("\n");
 }
 
 void					print_block_info(void *start, void *end, unsigned int size)
 {
-	ft_putstr("0x");
-	ft_putnbr((size_t)start, 16);
-	ft_putstr(" - 0x");
-	ft_putnbr((size_t)end, 16);
-	ft_putstr(" : ");
-	ft_putnbr(size, 10);
-	ft_putstr(" bytes\n");
+	ft_putstr_mem("0x");
+	ft_putnbr_base((size_t)start, 16);
+	ft_putstr_mem(" - 0x");
+	ft_putnbr_base((size_t)end, 16);
+	ft_putstr_mem(" : ");
+	ft_putnbr_base(size, 10);
+	ft_putstr_mem(" bytes\n");
 }
 
 int					print_mem_block(t_block *mem)
@@ -37,6 +37,7 @@ int					print_mem_block(t_block *mem)
 	int				size;
 
 	block = mem;
+	size = 0;
 	while (block)
 	{
 		if (!block->free)
@@ -47,6 +48,13 @@ int					print_mem_block(t_block *mem)
 		block = block->next;
 	}
 	return (size);
+}
+
+void					print_total(unsigned int count)
+{
+	ft_putstr_mem("Total : ");
+	ft_putnbr_base(count, 10);
+	ft_putstr_mem("\n");
 }
 
 void					show_alloc_mem(void)

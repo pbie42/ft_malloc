@@ -12,7 +12,7 @@
 
 #include "ft_malloc.h"
 
-t_mem			global_mem = {0, 0, 0, 0};
+t_memory			global_mem = {0, 0, 0, 0};
 
 static t_block			*add_large(size_t size)
 {
@@ -76,7 +76,7 @@ t_block					*new_mem_block(t_block *current, size_t size)
 	return (current);
 }
 
-static t_block			*find_mem(size_t size)
+static t_block			*find_mem_block(size_t size)
 {
 	t_mem_g		*tmp_group;
 	t_block			*tmp_block;
@@ -89,7 +89,7 @@ static t_block			*find_mem(size_t size)
 		return (add_large(size));
 	while (tmp_group)
 	{
-		tmp_block = tmp->group->mem;
+		tmp_block = tmp_group->mem;
 		while (tmp_block && (tmp_block->size < (size + sizeof(t_block))
 			|| tmp_block->free == FALSE))
 			tmp_block = tmp_block->next;
@@ -97,7 +97,7 @@ static t_block			*find_mem(size_t size)
 			return (new_mem_block(tmp_block, size));
 		else if (tmp_group->next == NULL)
 			new_mem_group(tmp_group, tmp_group->size);
-		tmp_group = tmp->group->next;
+		tmp_group = tmp_group->next;
 	}
 	return (NULL);
 }
@@ -107,15 +107,15 @@ void					*ft_malloc(size_t size)
 	t_block			*ptr;
 	int				sz;
 
-	if (!glbl_mem.init)
+	if (!global_mem.init)
 	{
 		sz = getpagesize() * 13; // Page size is 4096 bytes so this is 53248 bytes aka 52kb
 		global_mem.sml = new_mem_group(NULL, sz);
-		sz * 128; // 6815744 bytes aka 6.5mb
+		sz = sz * 128; // 6815744 bytes aka 6.5mb
 		global_mem.med = new_mem_group(NULL, sz);
 		global_mem.init = TRUE;
 	}
-	ptr = find_mem(size);
+	ptr = find_mem_block(size);
 	ptr->free = FALSE;
 	return (ptr->ptr);
 }

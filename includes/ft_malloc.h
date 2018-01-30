@@ -79,7 +79,7 @@ typedef struct				s_mem_g
 {
 	void					*mem;
 	size_t					size;
-	struct s_mem_group			*next;
+	struct s_mem_g			*next;
 }							t_mem_g;
 
 typedef struct			s_block
@@ -108,6 +108,7 @@ t_mem_g				*fusion(t_block *ptr, t_mem_g **prev);
 t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev);
 void					extend_block(t_block *tmp, size_t size);
 void					*ft_memcpy(void *dest, const void *src, size_t size);
-int						ft_putstr(char *s);
+int						ft_putnbr_base(size_t number, int base);
+int						ft_putstr_mem(char *s);
 
 #endif

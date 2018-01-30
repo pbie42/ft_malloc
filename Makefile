@@ -18,7 +18,13 @@ NAME = malloc
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRC = main.c \
+SRC = src/utils/ft_memcpy.c \
+			src/utils/ft_putnbr_base.c \
+			src/utils/ft_putstr_mem.c \
+			src/ft_free.c \
+			src/ft_malloc.c \
+			src/ft_realloc.c \
+			src/show_alloc_mem.c \
 
 OBJ = $(SRC:.c=.o)
 
@@ -31,7 +37,7 @@ $(NAME) : $(OBJ)
 	@echo "$(NAME) created"
 
 %.o: %.c
-	gcc $(CFLAGS) -c $< -I./includes-o $@
+	gcc $(CFLAGS) -c $< -I./includes -o $@
 
 clean :
 	rm -rf $(OBJ)
