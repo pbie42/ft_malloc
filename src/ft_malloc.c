@@ -38,7 +38,7 @@ static t_block			*add_large(size_t size)
 	return (new_block);
 }
 
-static t_mem_g	*new_mem_group(t_mem_g *current, size_t size)
+t_mem_g					*new_mem_group(t_mem_g *current, size_t size)
 {
 	t_mem_g		*mem_group;
 	t_block			*tmp_block;

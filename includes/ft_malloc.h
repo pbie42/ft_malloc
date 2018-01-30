@@ -23,6 +23,7 @@
 # include <sys/resource.h>
 # include <sys/mman.h>
 # include <unistd.h>
+# include <pthread.h>
 
 typedef int					t_bool;
 
@@ -50,7 +51,8 @@ typedef struct				s_memory
 	t_block					*lrg;
 }							t_memory;
 
-extern t_memory				global_mem;
+extern t_memory						global_mem;
+extern pthread_mutex_t		global_mutex;
 
 void					*ft_malloc(size_t size);
 void					ft_free(void *ptr);
@@ -61,5 +63,6 @@ void					extend_block(t_block *tmp, size_t size);
 void					*ft_memcpy(void *dest, const void *src, size_t size);
 int						ft_putnbr_base(size_t number, int base);
 int						ft_putstr_mem(char *s);
+t_mem_g				*new_mem_group(t_mem_g *current, size_t size);
 
 #endif
