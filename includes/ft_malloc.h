@@ -107,5 +107,7 @@ t_block				*new_mem_block(t_block *current, size_t size);
 t_mem_g				*fusion(t_block *ptr, t_mem_g **prev);
 t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev);
 void					extend_block(t_block *tmp, size_t size);
+void					*ft_memcpy(void *dest, const void *src, size_t size);
+int						ft_putstr(char *s);
 
 #endif
