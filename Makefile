@@ -31,7 +31,6 @@ OBJ = $(SRC:.c=.o)
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	@make -C libft
 	@gcc $(CFLAGS) $(OBJ) -fPIC -shared -o libft_malloc_$(HOSTTYPE).so
 	ln -sf libft_malloc_$(HOSTTYPE).so libft_malloc.so
 	@echo "$(NAME) created"
