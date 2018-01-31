@@ -12,12 +12,14 @@
 
 #include "ft_malloc.h"
 
-int					ft_putstr_mem(char *s)
+int		ft_putstr_mem(char *s)
 {
-	int				i;
+	int		i;
+	char	*s_cpy;
 
-	i = -1;
-	while (s[i])
-		i++;
+	i = 0;
+	s_cpy = s;
+	while (s_cpy && *s_cpy && ++i)
+		++s_cpy;
 	return (write(1, s, i));
 }

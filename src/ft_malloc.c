@@ -23,18 +23,18 @@ static t_block			*add_large(size_t size)
 	new_block->ptr = (void *)new_block + sizeof(t_block);
 	new_block->size = size;
 	new_block->next = NULL;
-	if (global_mem.lrg)
-	{
-		tmp_block = global_mem.lrg;
-		while (tmp_block)
-			tmp_block = tmp_block->next;
-		tmp_block->next = new_block;
-		new_block->prev = tmp_block;
-	}
-	else
+	if (!global_mem.lrg)
 	{
 		global_mem.lrg = new_block;
 		new_block->next = NULL;
+	}
+	else
+	{
+		tmp_block = global_mem.lrg;
+		while (tmp_block->next)
+			tmp_block = tmp_block->next;
+		tmp_block->next = new_block;
+		new_block->prev = tmp_block;
 	}
 	return (new_block);
 }

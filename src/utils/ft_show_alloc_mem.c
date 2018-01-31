@@ -62,8 +62,8 @@ void					ft_show_alloc_mem(void)
 	t_mem_g			*mem_g;
 	unsigned int	count;
 
-	count = 0;
 	mem_g = global_mem.sml;
+	count = 0;
 	while (mem_g)
 	{
 		print_mem_group("TINY", mem_g->mem);
@@ -77,7 +77,6 @@ void					ft_show_alloc_mem(void)
 		count += print_mem_block(mem_g->mem);
 		mem_g = mem_g->next;
 	}
-	mem_g = global_mem.sml;
 	if (global_mem.lrg)
 	{
 		print_mem_group("LARGE", global_mem.lrg);

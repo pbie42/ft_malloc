@@ -1,4 +1,5 @@
 *.o
 *.a
+*.so
 .DS_Store
 ft_malloc
