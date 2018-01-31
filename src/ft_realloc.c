@@ -30,8 +30,8 @@ void					extend_block(t_block *tmp, size_t size)
 {
 	t_block			*new;
 
-	new = (void *)tmp + size;
-	new->size = (tmp->size + tmp->next->size) - size;
+	new = (void *)tmp->ptr + size;
+	new->size = tmp->size + tmp->next->size - size;
 	tmp->free = FALSE;
 	tmp->size = size;
 	tmp->next->prev = new;
@@ -50,16 +50,16 @@ void					*ft_realloc(void *ptr, size_t size)
 	t_block			*new;
 
 	tmp = ptr - sizeof(t_block);
-	if (!find_mem(tmp, global_mem.sml, NULL)
-		|| !find_mem(tmp, global_mem.med, NULL) || !find_lrg(tmp))
+	if (!(find_mem(tmp, global_mem.sml, NULL)
+		|| find_mem(tmp, global_mem.med, NULL) || find_lrg(tmp)))
 		return (NULL);
 	if (tmp->size > size + sizeof(t_block))
 	{
 		new = new_mem_block(tmp, size);
 		fusion(tmp->next, NULL);
 	}
-	else if (tmp->size < size + sizeof(t_block) && tmp->next
-				&& tmp->next->free && tmp->next->size + tmp->size > size)
+	else if (tmp->size < size && tmp->next && tmp->next->free
+				&& tmp->next->size + tmp->size > size)
 	{
 		extend_block(tmp, size);
 		return (tmp->ptr);

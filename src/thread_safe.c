@@ -21,7 +21,7 @@ static void			init(void)
 	if (!global_mem.init)
 	{
 		sz = getpagesize() * 13;
-		global_mem.min = new_mem_group(NULL, sz);
+		global_mem.sml = new_mem_group(NULL, sz);
 		sz = 128 * sz;
 		global_mem.med = new_mem_group(NULL, sz);
 		global_mem.init = 1;
@@ -58,7 +58,7 @@ void					*realloc(void *ptr, size_t size)
 		return (NULL);
 	}
 	pthread_mutex_lock(&global_mutex);
-	ptr = ft_realloc(ptr);
+	ptr = ft_realloc(ptr, size);
 	pthread_mutex_unlock(&global_mutex);
 	return (ptr);
 }

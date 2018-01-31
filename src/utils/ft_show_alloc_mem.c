@@ -57,7 +57,7 @@ void					print_total(unsigned int count)
 	ft_putstr_mem("\n");
 }
 
-void					show_mem_alloc(void)
+void					ft_show_alloc_mem(void)
 {
 	t_mem_g			*mem_g;
 	unsigned int	count;

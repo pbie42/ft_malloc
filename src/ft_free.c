@@ -46,7 +46,7 @@ t_mem_g				*find_mem(t_block *ptr, t_mem_g *mem_g, t_mem_g **prev)
 	while (mem_g)
 	{
 		if ((void *)mem_g->mem <= (void *)ptr
-			&& (void *)ptr <= (void *)mem_g + mem_g->size)
+			&& (void *)ptr <= (void *)mem_g->mem + mem_g->size)
 		{
 			tmp = mem_g->mem;
 			while (tmp)
@@ -68,8 +68,8 @@ t_mem_g				*fusion(t_block *ptr, t_mem_g **prev)
 {
 	t_mem_g			*tmp;
 
-	if (!(tmp = find_mem(ptr, global_mem.sml, prev))
-		|| !(tmp = find_mem(ptr, global_mem.med, prev)))
+	if (!((tmp = find_mem(ptr, global_mem.sml, prev))
+		|| (tmp = find_mem(ptr, global_mem.med, prev))))
 		return (NULL);
 	ptr->free = TRUE;
 	if (ptr->prev && ptr->prev->free)
