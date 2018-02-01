@@ -6,13 +6,13 @@
 /*   By: pbie <pbie@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:17:17 by pbie              #+#    #+#             */
-/*   Updated: 2018/01/30 15:16:26 by pbie             ###   ########.fr       */
+/*   Updated: 2018/02/01 14:20:43 by pbie             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-void					print_mem_group(char *name, void *addr)
+void				print_mem_group(char *name, void *addr)
 {
 	ft_putstr_mem(name);
 	ft_putstr_mem(" : 0x");
@@ -20,7 +20,7 @@ void					print_mem_group(char *name, void *addr)
 	ft_putstr_mem("\n");
 }
 
-void					print_block_info(void *start, void *end, unsigned int size)
+void				print_block_info(void *start, void *end, unsigned int size)
 {
 	ft_putstr_mem("0x");
 	ft_putnbr_base((size_t)start, 16);
@@ -50,19 +50,19 @@ int					print_mem_block(t_block *mem)
 	return (size);
 }
 
-void					print_total(unsigned int count)
+void				print_total(unsigned int count)
 {
 	ft_putstr_mem("Total : ");
 	ft_putnbr_base(count, 10);
 	ft_putstr_mem("\n");
 }
 
-void					ft_show_alloc_mem(void)
+void				ft_show_alloc_mem(void)
 {
 	t_mem_g			*mem_g;
 	unsigned int	count;
 
-	mem_g = global_mem.sml;
+	mem_g = g_mem.sml;
 	count = 0;
 	while (mem_g)
 	{
@@ -70,17 +70,17 @@ void					ft_show_alloc_mem(void)
 		count += print_mem_block(mem_g->mem);
 		mem_g = mem_g->next;
 	}
-	mem_g = global_mem.med;
+	mem_g = g_mem.med;
 	while (mem_g)
 	{
 		print_mem_group("SMALL", mem_g->mem);
 		count += print_mem_block(mem_g->mem);
 		mem_g = mem_g->next;
 	}
-	if (global_mem.lrg)
+	if (g_mem.lrg)
 	{
-		print_mem_group("LARGE", global_mem.lrg);
-		count += print_mem_block(global_mem.lrg);
+		print_mem_group("LARGE", g_mem.lrg);
+		count += print_mem_block(g_mem.lrg);
 	}
 	print_total(count);
 }

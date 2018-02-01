@@ -6,7 +6,7 @@
 /*   By: pbie <pbie@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 13:17:17 by pbie              #+#    #+#             */
-/*   Updated: 2018/01/23 15:16:26 by pbie             ###   ########.fr       */
+/*   Updated: 2018/02/01 14:13:05 by pbie             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static t_bool		find_lrg(t_block *ptr)
 {
 	t_block			*tmp;
 
-	tmp = global_mem.lrg;
+	tmp = g_mem.lrg;
 	while (tmp)
 	{
 		if (tmp == ptr)
@@ -26,7 +26,7 @@ static t_bool		find_lrg(t_block *ptr)
 	return (FALSE);
 }
 
-void					extend_block(t_block *tmp, size_t size)
+void				extend_block(t_block *tmp, size_t size)
 {
 	t_block			*new;
 
@@ -44,14 +44,14 @@ void					extend_block(t_block *tmp, size_t size)
 	new->ptr = (void *)new + sizeof(t_block);
 }
 
-void					*ft_realloc(void *ptr, size_t size)
+void				*ft_realloc(void *ptr, size_t size)
 {
 	t_block			*tmp;
 	t_block			*new;
 
 	tmp = ptr - sizeof(t_block);
-	if (!(find_mem(tmp, global_mem.sml, NULL)
-		|| find_mem(tmp, global_mem.med, NULL) || find_lrg(tmp)))
+	if (!(find_mem(tmp, g_mem.sml, NULL)
+		|| find_mem(tmp, g_mem.med, NULL) || find_lrg(tmp)))
 		return (NULL);
 	if (tmp->size > size + sizeof(t_block))
 	{

@@ -6,18 +6,18 @@
 /*   By: pbie <pbie@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 13:17:17 by pbie              #+#    #+#             */
-/*   Updated: 2018/01/23 15:16:26 by pbie             ###   ########.fr       */
+/*   Updated: 2018/02/01 14:08:21 by pbie             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
 
-static t_bool			free_lrg(t_block *addr)
+static t_bool		free_lrg(t_block *addr)
 {
-	t_block				*tmp;
-	t_bool				freed;
+	t_block			*tmp;
+	t_bool			freed;
 
-	tmp = global_mem.lrg;
+	tmp = g_mem.lrg;
 	freed = FALSE;
 	while (tmp && !freed)
 	{
@@ -27,8 +27,8 @@ static t_bool			free_lrg(t_block *addr)
 				tmp->next->prev = tmp->prev;
 			if (tmp->prev)
 				tmp->prev->next = tmp->next;
-			if (tmp == global_mem.lrg)
-				global_mem.lrg = tmp->next;
+			if (tmp == g_mem.lrg)
+				g_mem.lrg = tmp->next;
 			munmap(tmp, tmp->size + sizeof(t_block));
 			freed = TRUE;
 		}
@@ -68,8 +68,8 @@ t_mem_g				*fusion(t_block *ptr, t_mem_g **prev)
 {
 	t_mem_g			*tmp;
 
-	if (!((tmp = find_mem(ptr, global_mem.sml, prev))
-		|| (tmp = find_mem(ptr, global_mem.med, prev))))
+	if (!((tmp = find_mem(ptr, g_mem.sml, prev))
+		|| (tmp = find_mem(ptr, g_mem.med, prev))))
 		return (NULL);
 	ptr->free = TRUE;
 	if (ptr->prev && ptr->prev->free)
@@ -90,11 +90,11 @@ t_mem_g				*fusion(t_block *ptr, t_mem_g **prev)
 	return (tmp);
 }
 
-void						ft_free(void *ptr)
+void				ft_free(void *ptr)
 {
 	t_mem_g			*tmp_group;
 	t_mem_g			*prv_group;
-	t_block				*tmp_block;
+	t_block			*tmp_block;
 
 	if (!ptr)
 		return ;
